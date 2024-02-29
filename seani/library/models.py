@@ -1,56 +1,54 @@
 from django.db import models
-from cloudinary.models import CloudinaryField
 
+# Create your models here.
 
 class Module(models.Model):
-    name =models.CharField(
-        verbose_name= 'Nombre',
-        max_length=100)
-    description = models.TextField(
-        verbose_name='Descripcion',
-        max_length= 200)
-    
-    @property
+    name = models.CharField( max_length=100, 
+                            verbose_name="Nombre" )
+    description = models.CharField(max_length=200,
+                                   verbose_name="Descripcion")
+
+    @property                               
     def num_questions(self):
         return self.question_set.count()
-    
 
-    def _str_(self):
+    def __str__(self):
         return self.name
-    
-    class Meta: 
-        verbose_name = 'Modulo'
-        verbose_name_plural = 'Modulos'
-
+    class Meta:
+        verbose_name = 'modulo'
+        verbose_name_plural = 'modulos'
 
 class Question(models.Model):
-    module=models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name = 'Modulo')
-    question_text = models.CharField(
-        verbose_name="Texto de la pregunta",
-        max_length=200,blank=True,
-        null = True)
-    # question_image= models.ImageField(
-    #     verbose_name="Imagen de la pregunta",
-    #     upload_to='Question',blank=True,
-    #     null=True)
-
-    question_image = CloudinaryField(
-        verbose_name = 'Imagen de la pregunta',
-        folder = 'questions',
-        resource_type = 'image',
-        null = True, blank = True
-    )
+    module = models.ForeignKey(
+        Module, 
+        on_delete = models.CASCADE,
+        verbose_name ='Modulo')
+    question_text = models.CharField(max_length=200,
+                                     verbose_name='Texto de la pregunta', 
+                                     null = True,
+                                     blank=True)
+    question_image= models.ImageField(upload_to='questions',
+                                  verbose_name="Imagen de la pregunta",
+                                  null=True,
+                                  blank=True)
+    answer1 = models.CharField(max_length=200,
+                               verbose_name = 'Respuesta A')
+    answer2 = models.CharField(max_length=200,
+                               verbose_name = 'Respuesta B')
+    answer3 = models.CharField(max_length=200,
+                               verbose_name = 'Respuesta C',
+                               null=True,
+                               blank=True)
+    answer4 = models.CharField(max_length=200,
+                               verbose_name = 'Respuesta D',
+                               null=True,
+                               blank=True)
+    correct = models.CharField(max_length=5,
+                               verbose_name = 'Respuesta correcta')
     
-
-    answer1= models.CharField(max_length=200, verbose_name="Respuesta A")
-    answer2= models.CharField(max_length=200, verbose_name="Respuesta B")
-    answer3= models.CharField(max_length=200, verbose_name="Respuesta C", null = True, blank = True)
-    answer4= models.CharField(max_length=200, verbose_name="Respuesta D", null = True, blank = True)
-    correct= models.CharField(max_length=5, verbose_name="Respuesta Correcta")
-
+    def __str__(self) :
+        return f"{self.module} - {self.id}"
     
-    def _str_(self):
-        return f"{self.module}-{self.id}"
-    class Meta: 
-        verbose_name = 'Pregunta'
-        verbose_name_plural = 'Preguntas'
+    class Meta:
+        verbose_name = 'pregunta'
+        verbose_name_plural = 'preguntas'
